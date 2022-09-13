@@ -25,7 +25,7 @@ Content
 
 ## Entry Config
 
-```yaml
+```markdown
 ---
 title: string
 weight: number
@@ -38,7 +38,7 @@ A pretty title that will be displayed to the user.
 
 #### `weight`
 
-Entries and files are sorted by their weights. Higher number = Higher up.
+Entries and directories are sorted by their weights. Higher number = Higher up.
 
 ## File and directory names
 
