@@ -1,0 +1,30 @@
+---
+title: Detailed Usage
+---
+
+### Basic usage
+
+| Action                 | FreeBSD pkg-style alias | Pacman-style flags |
+|------------------------|-------------------------|--------------------|
+| Install a package      | ame ins/install         | ame -S             |
+| Remove a package       | ame rm/remove           | ame -R/-Rs         |
+| Upgrade a package      | ame upg/upgrade         | ame -Syu           |
+| Search for a package   | ame sea/search          | ame -Ss            |
+| Query the package list | ame qu/query            | ame -Q             |
+| Show a package's info  | ame inf/info            | ame -Qi            |
+| Clean the pacman cache | ame cl/clean            | ame -Sc            |
+| Check for .pacnew      | ame di/diff             | ame -D             |
+
+### Exit codes overview
+
+| Exit Code (i32) | Reason                                                   |
+|-----------------|----------------------------------------------------------|
+| 1               | Running ame as UID 0 / root                              |
+| 2               | Failed creating paths                                    |
+| 3               | Could not find one or more required package dependencies |
+| 4               | User cancelled package installation                      |
+| 5               | Pacman error when installing package                     |
+| 6               | Git error                                                |
+| 7               | Makepkg error                                            |
+| 8               | Failed to parse config file                              |
+| 63              | Any other misc error                                     |
