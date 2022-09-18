@@ -1,5 +1,5 @@
 ---
-title: How to make GNOME Wayland work on a NVIDIA GPU
+title: How to make GNOME Wayland work on an NVIDIA GPU
 ---
 Sometimes, GDM disables GNOME Wayland when it detects you have an NVIDIA GPU. If you want to force-enable GNOME Wayland, you first have to enable DRM [kernel mode setting](https://wiki.archlinux.org/title/Kernel_mode_setting) (KMS) on the NVIDIA driver so Wayland is able to run. To do this, you need to add a kernel parameter to tell the NVIDIA driver to enable KMS. The kernel parameter you need to add is `nvidia_drm.modeset=1`.
 
