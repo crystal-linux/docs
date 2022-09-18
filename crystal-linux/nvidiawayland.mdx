@@ -1,5 +1,5 @@
 ---
-title: How to make GNOME Wayland work on an NVIDIA GPU
+title: How to make Wayland work on an NVIDIA GPU
 ---
 Sometimes, GDM disables GNOME Wayland when it detects you have an NVIDIA GPU. If you want to force-enable GNOME Wayland, you first have to enable DRM [kernel mode setting](https://wiki.archlinux.org/title/Kernel_mode_setting) (KMS) on the NVIDIA driver so Wayland is able to run. To do this, you need to add a kernel parameter to tell the NVIDIA driver to enable KMS. The kernel parameter you need to add is `nvidia_drm.modeset=1`.
 
@@ -19,13 +19,6 @@ After you add the kernel parameter, you want to make sure GRUB knows that you ha
 ## What to do after you add the kernel parameter.
 After you add the kernel parameter and restart, that might be all you need to do to get GNOME Wayland working. Check if you can access GNOME Wayland and if you can't, try these other steps.
 
-GDM uses some chipset dependent [udev rules](https://gitlab.gnome.org/GNOME/gdm/-/blob/main/data/61-gdm.rules.in) to see if it should force Xorg usage instead of letting you use Wayland. If you want to force-enable Wayland, run this command.
-```
-sudo ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
-```
-This command should symlink GDM's udev rules to *nothing*. Rules in `/etc/udev/rules.d/` should overwrite rules in `/usr/lib/udev/rules.d` (which are shipped by the package itself and managed by your package manager).
-
-
 After that, reboot and see if GNOME Wayland works. If it still doesn't work, you need to add some modules to your initramfs for early boot modesetting. There should be a file (in Arch based distributions) called `/etc/mkinitcpio.conf`. In that file, there should be a `MODULES` line. On that line, there should be some parentheses. Between them, you can add kernel modules you want built into your initramfs (each module is separated by a space). We want to add some NVIDIA modules to our initramfs so it can be loaded early in the boot process. So add these modules to the file. Make sure to edit this file with super-user permissions.
 ```
 nvidia nvidia_modeset nvidia_uvm nvidia_drm
@@ -40,5 +33,13 @@ And after that, you need to regenerate your initramfs. To do that, run this comm
 sudo mkinitcpio -P
 ```
 
+### Removing the gdm udev that disables wayland
+GDM uses some chipset dependent [udev rules](https://gitlab.gnome.org/GNOME/gdm/-/blob/main/data/61-gdm.rules.in) to see if it should force Xorg usage instead of letting you use Wayland. If you want to force-enable Wayland, run this command.
+```
+sudo ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
+```
+This command should symlink GDM's udev rules to *nothing*. Rules in `/etc/udev/rules.d/` should overwrite rules in `/usr/lib/udev/rules.d` (which are shipped by the package itself and managed by your package manager).
 And after that, reboot and GNOME Wayland *should* be working!
+
+
 If it still doesn't work, your GPU might not support Wayland on the proprietary NVIDIA drivers. There is no fix for this other than using the nouveau driver, which doesn't support everything that the proprietary NVIDIA driver does.
