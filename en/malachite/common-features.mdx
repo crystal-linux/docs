@@ -5,10 +5,11 @@ title: Common Features Between Modes
 As `[mode]`us, shared of between uh… repositories… or something.
 
 ## What you need to know
+
 Malachite is fairly fleshed out in Repository mode, and not so much in Workspace mode.
 
 This isn't of course because I'm lazy and hate Workspace mode or anything, there's just not
-a lot *to add*.
+a lot _to add_.
 
 Without further ado, let's take a look at this example config file.
 
@@ -36,15 +37,15 @@ foo = "https://example.org/{}.git"
 bar = "https://example.org/other/{}.git"
 ```
 
-Now, this is going to look really confusing at first, but bear with me. 
+Now, this is going to look really confusing at first, but bear with me.
 
 In this document, we'll cover only what is required to know for **both** modes.
 More specialized tutorials will be linked for each mode at the bottom of this page.
 
 Let's start with the `[base]`(ics).
 
-
 ## Base Config
+
 The base config defines a few common parameters between all the Malachite modes.
 
 ```toml
@@ -63,10 +64,10 @@ Also defined in this snippet is `smart_pull`, which controls whether to pull… 
 What that actually means is that instead of just performing a simple `git pull` in each repository, Malachite
 will:
 
-- First run `git remote update` to fetch new remotes from origin 
+- First run `git remote update` to fetch new remotes from origin
 - Then run `git status` and parse the output to see if the current branch is behind
 - If the current branch is behind, it runs a regular `git pull`, which will take advantage of the remotes
-  already being updated. 
+  already being updated.
 
 Theoretically, this only actually speeds things up by a minute amount (think milliseconds, really). Where this feature shines however is in repository mode,
 where it enables helpful automation features such as `build_on_update`.
@@ -74,8 +75,7 @@ where it enables helpful automation features such as `build_on_update`.
 Regardless, it's recommended to keep this enabled for the slight speed-up, and only disable it if it causes issues.
 I've never personally had issues with it in the past, but who knows what could happen. This is Git we're talking about.
 
-
-### Repositories Config 
+### Repositories Config
 
 The repositories config is realistically what makes Malachite churn repo butter internally. It's the whole
 purpose of what it does, and because of that we've tried to come up with a neat little system to help
@@ -95,7 +95,8 @@ foo = "https://example.org/{}.git"
 bar = "https://example.org/other/{}.git"
 ```
 
-The way this works is simple: 
+The way this works is simple:
+
 - We have 2 URLs in the `repositories.urls` key.
 - Each `repo` in the `repositories.repos` key is prefixed with an identifier.
 - If the number is `foo`, it'll insert the URL with the id `foo`.
@@ -104,15 +105,16 @@ The way this works is simple:
 ### Hang on, what are the special symbols????
 
 I'm glad you asked!
+
 - If you want to clone a specific branch, simply use the `/` delimiter. To clone repository `foo` on branch `bar`, use `id:foo/bar`.
 - If you want a specific package to build first, use instances of `!` to set priority. This is explained later in the [Repository Mode](REPOSITORY_MODE.md) page
 
 The last `:` delimiter is entirely optional, and behaves differently depending on the mode:
+
 - In Repository mode, it defines the desired commit hash/rev/tag to checkout on repository clone
 - In Workspace mode, it defines the desired depth to clone the repository, useful with large git repositories, such as `nixpkgs`.
 
 That's literally it!
-
 
 ## Mode-Specific Config
 
@@ -125,7 +127,6 @@ For mode-specific config, avert your eyes to the following links!
 
 Functioning config examples for both modes are available in the [examples](../examples) directory!
 
-## Usage 
+## Usage
 
 Alternatively, you can look at the [Usage](USAGE.md) guide!
-
