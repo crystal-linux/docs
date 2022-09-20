@@ -1,0 +1,25 @@
+---
+title: Config Keys
+---
+
+## [base]
+
+| Key                       | Description                                                                                                               | Default |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------- |
+| `pacdiff_warn`            | Whether to warn the user about `vimdiff` for `pacdiff`                                                                    | `true`  |
+| `paccache_keep`           | How many versions (amount of times a package has been downloaded to the cache) of a package you want to keep in the cache | `0`     |
+| `paccache_keep_ins_pkgs`  | Exclude installed packages from getting cleared out of the cache                                                          | `true`  |
+| `aur_verification_prompt` | If `true`, ask the user if they want to utilize the AUR on an operation.                                                  | `true`  |
+
+## [extra]
+
+| Key         | Description                                                                        | Default |
+| ----------- | ---------------------------------------------------------------------------------- | ------- |
+| `uwu`       | Makes Amethyst's output... "cuter"                                                 | `false` |
+| `uwu_debug` | Makes debug and traces `uwu`ed. Please never send us debug logs with this enabled. | `false` |
+
+## [bin]
+
+| Key    | Description                                      | Default  |
+| ------ | ------------------------------------------------ | -------- |
+| `sudo` | The path to use for `sudo` (or any `sudo`-likes) | `'sudo'` |
