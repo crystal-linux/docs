@@ -1,0 +1,35 @@
+---
+title: Detailierte Benutzung
+---
+
+Arbeiten Sie härter, machen Sie es besser!
+
+## Globale Flags
+
+| Flag              | Description                                                                                                                                             |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `--verbose`, `-v` | Gibt viele Debug-Informationen an `stderr` aus. Wenn etwas nicht funktioniert, hilft es uns sehr, wenn Sie uns die Ausgabe mit dieser Funktion schicken |
+| `--exclude`, `-x` | Schließt das angegebene Paket von der aktuellen Operation aus. Kann mehrfach verwendet werden.                                                          |
+
+## Grundlegende Befehle
+
+| Action                                                                                                       | Command                                   | Extra Flags                                                                                                                      |
+| ------------------------------------------------------------------------------------------------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Erstellen Sie ein Paket/Pakete.                                                                              | `mlc build <package>` [all if left empty] | `--no-regen`: Regeneriert das Repository nach dem Build nicht                                                                    |
+| Erzeuge pacman repository                                                                                    | `mlc repo-gen`                            |                                                                                                                                  |
+| Lokale Repos/PKGBUILDs aktualisieren                                                                         | `mlc pull/update` [all if left empty]     | `--no-regen`: Wenn `mode.repository.build_on_update` `true` ist, wird das Repository nach der Paketerneuerung nicht neu erstellt |
+| Konfigurationsdatei erstellen und/oder öffnen                                                                | `mlc conf`                                |                                                                                                                                  |
+| Initialisiert Repo/Workspace basierend auf der Konfiguration in mlc.toml                                     | `mlc clone/init`                          |                                                                                                                                  |
+| Zeigt eine Infotafel/Übersicht über das aktuelle Projektarchiv an                                            | `mlc info/status`                         |                                                                                                                                  |
+| Setzt das Malachite-Repository zurück, indem es alle Verzeichnisse löscht und `mlc.toml` und `.git` auslässt | `mlc clean/reset`                         | `--force`: Entfernen unsauberer Verzeichnisse (unstaged, untracked, etc.)                                                        |
+
+## Exit Codes
+
+| AppExitCode (named Enum) | Exit code (i32) | Error Description                                                                                                                  |
+| ------------------------ | --------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `RunAsRoot`              | `1`             | Malachit wurde als Root ausgeführt. Hiervon wird dringend abgeraten. Und zwar so sehr, dass es sich weigert, ausgeführt zu werden. |
+| `PkgsNotFound`           | `2`             | Es wurden keine Pakete für den gewünschten Vorgang angegeben/gefunden                                                              |
+| `DirNotEmpty`            | `3`             | Es wurde versucht, ein Malachite-Repository in einem nicht leeren Verzeichnis zu erstellen                                         |
+| `ConfigParseError`       | `4`             | Die Konfigurationsdatei konnte nicht geparst werden                                                                                |
+| `RepoParseError`         | `5`             | Die Repository-Informationen konnten nicht geparst werden                                                                          |
+| `RepoNotClean`           | `6`             | Das Git-Repository ist nicht sauber und kann nicht ohne `--force` entfernt werden                                                  |

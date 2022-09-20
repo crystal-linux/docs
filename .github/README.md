@@ -3,6 +3,7 @@
 ## Entries
 
 Start every new entry with
+
 ```markdown
 ---
 title: An Important Entry ✅

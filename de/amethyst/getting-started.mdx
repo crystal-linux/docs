@@ -1,0 +1,41 @@
+---
+title: Erste Schritte
+weight: 20
+---
+
+Amethyst ist ein schneller, effizienter und leichter AUR-Helfer und Pacman Wrapper. Entwickelt für Crystal, kompatibel mit jeder Arch-basierten Linux Distribution.
+![Amethyst demo](/demos/ame.png)
+
+## Installation
+
+### Crystal Linux
+
+Amethyst ist automatisch auf Crystal Linux installiert
+
+### Nicht-Crystal Distributionen
+
+1. `sudo pacman -S --needed base-devel pacman-contrib cargo`
+2. `git clone https://github.com/crystal-linux/pkgbuild.amethyst`
+3. `cd pkgbuild.amethyst && makepkg -si`
+
+Es ist auch unter der AUR unter dem Namen [`ame`](https://aur.archlinux.org/packages/ame).
+
+## Benutzung
+
+Amethyst unterstützt "Subcommands" und Pacman-styled flags. Lese die [Detailierte Benutzung](usage) für mehr Informationen.
+
+## Configurieren
+
+Sie können Amethyst mithilfe der Datei `~/.config/ame/config.toml` konfigurieren, die automatisch erstellt wird. Jeder Schlüssel wird in [Config Schlüssel](config) erklärt.
+
+```toml
+# ~/.config/ame/config.toml
+
+[base]
+pacdiff_warn = true
+paccache_keep = 0
+paccache_keep_ins_pkgs = true
+
+[bin]
+sudo = 'sudo'
+```

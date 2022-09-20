@@ -31,4 +31,3 @@ jobs:
       - name: Test Build
         working-directory: getcryst.al
         run: yarn build
-
