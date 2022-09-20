@@ -1,0 +1,58 @@
+---
+title: Wie bekommt man Wayland zum funktonieren mit einer NVIDIA Grafikkarte
+---
+
+Manchmal deaktiviert GDM GNOME Wayland, wenn es erkennt, dass Sie einen NVIDIA-Grafikprozessor besitzen. Wenn Sie die Aktivierung von GNOME Wayland erzwingen möchten, müssen Sie zunächst DRM [Kernel-Modus-Einstellung](https://wiki.archlinux.org/title/Kernel_mode_setting) (KMS) für den NVIDIA-Treiber aktivieren, damit Wayland ausgeführt werden kann. Dazu müssen Sie einen Kernel-Parameter hinzufügen, um dem NVIDIA-Treiber mitzuteilen, dass er KMS aktivieren soll. Der Kernelparameter, den Sie hinzufügen müssen, lautet `nvidia_drm.modeset=1`.
+
+## GRUB
+
+Wenn Sie z. B. GRUB verwenden, sollte es eine Datei namens `/etc/default/grub` geben. In dieser Datei sollte es eine Zeile geben, die wie folgt aussieht:
+
+```
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet"
+```
+
+Sie wollen den neuen Kernel-Parameter am Ende der Zeile, zwischen den Anführungszeichen, einfügen. Parameter werden durch Leerzeichen getrennt, also fügen Sie nach dem letzten Parameter ein Leerzeichen ein und fügen den Parameter dort an. Stellen Sie sicher, dass Sie die Datei mit Superuser-Rechten (mit `sudo`) bearbeiten, sonst erhalten Sie einen Fehler beim Schreiben der Datei.
+
+### Beispiel
+
+```
+GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet nvidia_drm.modeset=1"
+```
+
+Nachdem Sie den Kernelparameter hinzugefügt haben, müssen Sie sicherstellen, dass GRUB weiß, dass Sie Ihre Kernelparameter geändert haben. Zu diesem Zweck müssen Sie Ihre GRUB-Konfigurationsdatei neu erstellen. Um Ihre GRUB-Konfigurationsdatei neu zu erstellen, führen Sie `sudo grub-mkconfig -o /boot/grub/grub.cfg` aus. Ihre GRUB-Konfiguration sollte dann den neuen Kernel-Parameter enthalten und Sie können ihn verwenden, indem Sie Ihr System neu starten.
+
+## Was ist zu tun, nachdem Sie den Kernel-Parameter hinzugefügt haben?
+
+Nachdem Sie den Kernel-Parameter hinzugefügt und neu gestartet haben, ist dies möglicherweise alles, was Sie tun müssen, damit GNOME Wayland funktioniert. Prüfen Sie, ob Sie auf GNOME Wayland zugreifen können, und wenn nicht, versuchen Sie diese anderen Schritte.
+
+Starten Sie danach neu und prüfen Sie, ob GNOME Wayland funktioniert. Wenn es immer noch nicht funktioniert, müssen Sie einige Module zu Ihrem initramfs hinzufügen, um die Bootmodi frühzeitig einzustellen. Es sollte eine Datei (in Arch-basierten Distributionen) namens `/etc/mkinitcpio.conf` geben. In dieser Datei sollte es eine Zeile `MODULES` geben. In dieser Zeile sollten sich einige Klammern befinden. Zwischen den Klammern können Sie Kernelmodule hinzufügen, die Sie in Ihr initramfs einbauen möchten (jedes Modul wird durch ein Leerzeichen getrennt). Wir wollen einige NVIDIA-Module zu unserem initramfs hinzufügen, damit sie zu Beginn des Bootvorgangs geladen werden können. Fügen Sie also diese Module zu der Datei hinzu. Stellen Sie sicher, dass Sie diese Datei mit Superuser-Rechten bearbeiten.
+
+```
+nvidia nvidia_modeset nvidia_uvm nvidia_drm
+```
+
+### Beispiel
+
+```
+MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+```
+
+Und danach müssen Sie Ihr initramfs neu generieren. Führen Sie dazu diesen Befehl aus.
+
+```
+sudo mkinitcpio -P
+```
+
+### Removing the gdm udev that disables wayland
+
+GDM verwendet einige Chipsatz-abhängige [udev Regeln](https://gitlab.gnome.org/GNOME/gdm/-/blob/main/data/61-gdm.rules.in), um festzustellen, ob es die Verwendung von Xorg erzwingen soll, anstatt Ihnen die Verwendung von Wayland zu ermöglichen. Wenn Sie Wayland erzwingen wollen, führen Sie diesen Befehl aus.
+
+```
+sudo ln -s /dev/null /etc/udev/rules.d/61-gdm.rules
+```
+
+Dieser Befehl sollte die udev-Regeln von GDM mit _nichts_ verlinken. Die Regeln in `/etc/udev/rules.d/` sollten die Regeln in `/usr/lib/udev/rules.d` überschreiben (die vom Paket selbst ausgeliefert und von Ihrem Paketmanager verwaltet werden).
+Danach starten Sie neu und GNOME Wayland _sollte_ funktionieren!
+
+Wenn es dann immer noch nicht funktioniert, unterstützt Ihr Grafikprozessor Wayland möglicherweise nicht mit den proprietären NVIDIA-Treibern. Es gibt keine andere Lösung als die Verwendung des Nouveau-Treibers, der nicht alles unterstützt, was der proprietäre NVIDIA-Treiber tut.

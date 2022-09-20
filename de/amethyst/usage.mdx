@@ -1,0 +1,31 @@
+---
+title: Detailierte Benutzung
+weight: 10
+---
+
+### Allgemeine Benutzung
+
+| Aktion                               | FreeBSD pkg-styled alias | Pacman-styled flags |
+| ------------------------------------ | ------------------------ | ------------------- |
+| Installier ein Paket                 | ame ins/install          | ame -S              |
+| Deinstallier ein Paket               | ame rm/remove            | ame -R/-Rs          |
+| Update bzw. upgrade ein Paket        | ame upg/upgrade          | ame -Syu            |
+| Suche ein Paket                      | ame sea/search           | ame -Ss             |
+| Abfrage der Paketliste               | ame qu/query             | ame -Q              |
+| Zeigt die Informationeneines Paketes | ame inf/info             | ame -Qi             |
+| Reinige den pacman cache             | ame cl/clean             | ame -Sc             |
+| Schau nach .pacnew                   | ame di/diff              | ame -D              |
+
+### Übersicht der Exit-Codes
+
+| Exit Code (i32) | Begründung                                                                        |
+| --------------- | --------------------------------------------------------------------------------- |
+| 1               | Ausführen von ame als UID 0 / root                                                |
+| 2               | Erstellung von Pfaden fehlgeschlagen                                              |
+| 3               | Eine oder mehrere erforderliche Paketabhängigkeiten konnten nicht gefunden werden |
+| 4               | Benutzer hat die Installation eines Paketes abgebrochen                           |
+| 5               | Pacman-Fehler bei der Installation von Paketen                                    |
+| 6               | Git-Fehler                                                                        |
+| 7               | Makepkg-Fehler                                                                    |
+| 8               | Konfigurationsdatei konnte nicht geparst werden                                   |
+| 63              | Sonstiger Fehler                                                                  |
