@@ -1,0 +1,129 @@
+---
+title: Gemeinsame Merkmale der Modi
+---
+
+## Was du wissen musst
+
+Malachite ist im Repository-Modus ziemlich umfangreich, im Workspace-Modus dagegen nicht so sehr.
+
+Das liegt natürlich nicht daran, dass ich faul bin und den Arbeitsbereich-Modus hasse oder so, es gibt einfach nicht
+nicht viel _hinzufügen_.
+
+Werfen wir nun einen Blick auf diese Beispiel-Konfigurationsdatei.
+
+```toml
+# mlc.toml
+
+[base]
+mode = "workspace"
+smart_pull = true
+
+[mode.workspace]
+git_info = true
+colorblind = true
+
+[repositories]
+repos = [
+  "foo:repo1:2",
+  "foo:repo2/testing",
+  "bar:baz!",
+  "bar:qux/testing!:1",
+]
+
+[repositories.urls]
+foo = "https://example.org/{}.git"
+bar = "https://example.org/other/{}.git"
+```
+
+Das wird auf den ersten Blick sehr verwirrend aussehen, aber haben Sie Vertrauen in mich.
+
+In diesem Dokument wird nur das behandelt, was man für **beide** Modi wissen muss.
+Speziellere Anleitungen werden für jeden Modus am Ende dieser Seite verlinkt.
+
+Beginnen wir mit den Grundlagen
+
+## Basis-Konfiguration
+
+Die Basiskonfiguration definiert einige gemeinsame Parameter für alle Malachite-Modi.
+
+```toml
+[base]
+mode = "workspace"
+smart_pull = true
+```
+
+In diesem Ausschnitt definieren wir "mode" als "workspace".
+
+base.mode" kann in Malachite immer nur eine der Optionen "workspace" oder "repository" sein, und definiert, Trommelwirbel...
+Der Modus, in dem er arbeitet. Wenn er auf etwas anderes als diese 2 Modi eingestellt ist, stürzt er ab.
+
+Ebenfalls in diesem Ausschnitt definiert ist `smart_pull`, das steuert, ob intelligent gezogen werden soll.
+
+Das bedeutet, dass Malachite anstelle eines einfachen `git pull` in jedem Repository, Malachite
+wird:
+
+- Führt zuerst `git remote update` aus, um neue Remotes vom Source zu holen.
+- Dann wird ausgeführt `git status` und analysiert die Ausgabe, um festzustellen, ob der aktuelle Zweig im Rückstand ist
+- Wenn der aktuelle Zweig im Rückstand ist, wird ein reguläres `git pull` ausgeführt, das die bereits aktualisierten Remote ausnutzt.
+
+Theoretisch beschleunigt dies die Dinge nur um einen winzigen Betrag (man denke an Millisekunden, wirklich). Wo diese Funktion jedoch glänzt,
+ist im Repository-Modus, wo es hilfreiche Automatisierungsfunktionen wie `build_on_update` ermöglicht.
+
+Trotzdem ist es empfehlenswert, diese Funktion zu aktivieren, um die Geschwindigkeit zu erhöhen, und sie nur zu deaktivieren, wenn sie Probleme verursacht.
+Ich persönlich hatte in der Vergangenheit noch nie Probleme damit, aber wer weiß, was alles passieren kann. Wir reden hier über Git.
+
+### Repositories-Konfiguration
+
+Die Konfiguration der Repositories ist realistisch gesehen das, was Malachite intern zu Butter werden lässt.
+Sie ist der ganze und deshalb haben wir versucht, ein kleines, aber feines System zu entwickeln, mit dem man viele Pakete zu erleichtern,
+ohne jede URL eine Million Mal eingeben zu müssen.
+
+```toml
+[repositories]
+repos = [
+  "foo:repo1:2",
+  "foo:repo2/testing",
+  "bar:baz!",
+  "bar:qux/testing!:1",
+]
+
+[repositories.urls]
+foo = "https://example.org/{}.git"
+bar = "https://example.org/other/{}.git"
+```
+
+Der Weg wie das funktioniert ist einfach:
+
+- Wir haben 2 URLs im Schlüssel `repositories.urls`.
+- Jedem `repo` im Schlüssel `repositories.repos` ist ein Bezeichner vorangestellt.
+- Wenn die Nummer `foo` ist, wird die URL mit der ID `foo` eingefügt.
+  - Insbesondere wird in der URL der Name des definierten `repo` anstelle der Teilzeichenkette `%repo%` eingefügt.
+
+### Moment mal, was sind die besonderen Symbole????
+
+Ich bin froh, dass Sie gefragt haben!
+
+- Wenn Sie einen bestimmten Zweig klonen wollen, verwenden Sie einfach den Begrenzer `/`. Um das Repository `foo` auf den Zweig `bar` zu klonen, verwenden Sie `id:foo/bar`.
+- Wenn Sie wollen, dass ein bestimmtes Paket zuerst gebaut wird, verwenden Sie Instanzen von `!`, um die Priorität festzulegen. Dies wird später auf der Seite [Repository Mode](REPOSITORY_MODE.md) erklärt.
+
+Das letzte `:` Trennzeichen ist völlig optional und verhält sich je nach Modus unterschiedlich:
+
+- Im Repository-Modus definiert es den gewünschten Commit-Hash/Rev/Tag zum Auschecken beim Klonen des Repositorys
+- Im Arbeitsbereich-Modus definiert es die gewünschte Tiefe, um das Repository zu klonen, was bei großen Git-Repositories wie `nixpkgs` nützlich ist.
+
+Das war's buchstäblich!
+
+## Modus-spezifische Konfig.
+
+Für modusspezifische Konfigurationen, schauen Sie sich die folgenden Links an!
+
+- [Workspace Mode](WORKSPACE_MODE.md)
+- [Repository Mode](REPOSITORY_MODE.md)
+
+## Beispiel
+
+Funktionierende Konfigurationsbeispiele für beide Modi sind im Verzeichnis [examples](../examples) verfügbar!
+
+## Verwendung
+
+Alternativ können Sie sich auch den [Usage](usage) Guide ansehen!
