@@ -6,13 +6,6 @@ Wayland requires the nvidia gpu to have modesetting enabled, to do that you have
 ## Adding the nvidia mkinitcpio modules
 To add the required nvidia modules `nvidia nvidia_modeset nvidia_uvm nvidia_drm` to the mkinitcpio modules you'll have to edit `/etc/mkinitcpio.conf` by running `sudo nano /etc/mkinitcpio.conf`
 in that file there should be a line that looks like this:
-
-Sometimes, GDM disables GNOME Wayland when it detects you have an NVIDIA GPU. If you want to force-enable GNOME Wayland, you first have to enable DRM [kernel mode setting](https://wiki.archlinux.org/title/Kernel_mode_setting) (KMS) on the NVIDIA driver so Wayland is able to run. To do this, you need to add a kernel parameter to tell the NVIDIA driver to enable KMS. The kernel parameter you need to add is `nvidia_drm.modeset=1`.
-
-## GRUB
-
-For example, if you are using GRUB, there should be a file called `/etc/default/grub`. In there should be a line in that file that looks like this:
-
 ```
 MODULES=()
 ```
@@ -22,39 +15,9 @@ MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 ```
 To save the file you have to press `CTRL+O` and to quit `CTRL+X`
 Now you want to generate the initramfs:
-
-You want to append the new kernel parameter at the end of the line, between the quotes. Parameters are separated by spaces, so put a space after the last parameter and append the parameter there. Make sure to edit the file with super-user permissions (with `sudo`) or you will get errors writing the file.
-
-### Example
-
-```
-GRUB_CMDLINE_LINUX_DEFAULT="loglevel=3 quiet nvidia_drm.modeset=1"
-```
-
-After you add the kernel parameter, you want to make sure GRUB knows that you have changed your kernel parameters. To do this, you need to rebuild your GRUB configuration file. To rebuild your GRUB configuration file, run `sudo grub-mkconfig -o /boot/grub/grub.cfg`, and your GRUB configuration should have the new kernel parameter and you can use it by rebooting your system.
-
-## What to do after you add the kernel parameter.
-
-After you add the kernel parameter and restart, that might be all you need to do to get GNOME Wayland working. Check if you can access GNOME Wayland and if you can't, try these other steps.
-
-After that, reboot and see if GNOME Wayland works. If it still doesn't work, you need to add some modules to your initramfs for early boot modesetting. There should be a file (in Arch based distributions) called `/etc/mkinitcpio.conf`. In that file, there should be a `MODULES` line. On that line, there should be some parentheses. Between them, you can add kernel modules you want built into your initramfs (each module is separated by a space). We want to add some NVIDIA modules to our initramfs so it can be loaded early in the boot process. So add these modules to the file. Make sure to edit this file with super-user permissions.
-
-```
-nvidia nvidia_modeset nvidia_uvm nvidia_drm
-```
-
-### Example
-
-```
-MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
-```
-
-And after that, you need to regenerate your initramfs. To do that, run this command.
-
 ```
 sudo mkinitcpio -P
 ```
-to regenerate the initcpio
 
 ## Adding the kernel flag
 To add the kernel flag with grub, you have to edit `/etc/default/grub` by running `sudo nano /etc/default/grub`, you should find a line that looks like this:
@@ -73,7 +36,7 @@ sudo grub-mkconfig -o /boot/grub/grub.cfg
 ```
 This will generate the grub config and save it to /boot/grub/grub.cfg
 
-### Extra steps for GNOME and onyx
+## Extra steps for GNOME and onyx
 GDM uses some chipset dependent [udev rules](https://wiki.archlinux.org/title/Udev) to see if it should force Xorg usage instead of letting you use Wayland. These udev rules can be disabled by running this command:
 ### Removing the gdm udev that disables wayland
 
