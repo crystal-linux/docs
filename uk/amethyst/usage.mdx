@@ -1,0 +1,31 @@
+---
+title: Використання
+weight: 10
+---
+
+### Основні команди
+
+| Дія                    | Псевдонім у стилі FreeBSD pkg | Прапори у стилі Pacman |
+| ---------------------- | ----------------------------- | ---------------------- |
+| Встановити пакет       | ame ins/install               | ame -S                 |
+| Remove a package       | ame rm/remove                 | ame -R/-Rs             |
+| Upgrade a package      | ame upg/upgrade               | ame -Syu               |
+| Search for a package   | ame sea/search                | ame -Ss                |
+| Query the package list | ame qu/query                  | ame -Q                 |
+| Show a package's info  | ame inf/info                  | ame -Qi                |
+| Clean the pacman cache | ame cl/clean                  | ame -Sc                |
+| Check for .pacnew      | ame di/diff                   | ame -D                 |
+
+### Статус завершення
+
+| Статус завершення (i32) | Причина                                                         |
+| ----------------------- | --------------------------------------------------------------- |
+| 1                       | Запуск ame через UID 0 / root                                   |
+| 2                       | Не вдалося створити шляхи                                       |
+| 3                       | Не вдалося знайти одну або кілька необхідних залежностей пакета |
+| 4                       | Користувач скасував встановлення пакета                         |
+| 5                       | Помилка Pacman під час встановлення пакета                      |
+| 6                       | Помилка Git                                                     |
+| 7                       | Помилка Makepkg                                                 |
+| 8                       | Не вдалося проаналізувати файл конфігурації                     |
+| 63                      | Будь-яка інша помилка                                           |
